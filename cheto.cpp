@@ -22,88 +22,118 @@ struct KC
 
 
 
-int check_int(string a) {
-    cout << a << endl;
-    int b;
-    cin >> b;
-    while (cin.fail()) {
+int check_int() {
+    int value;
+    cin >> value;
+    while (cin.fail() || std::cin.peek() != '\n' || value < 0) {
         cin.clear();
         cin.ignore(1000, '\n');
         cout << "try again" << endl;
-        cin >> b;
+        cin >> value;
     }
-    return b;
+    return value;
 }
 
-double check_double(string a) {
-    cout << a << endl;
-    double b;
-    cin >> b;
-    while (cin.fail()) {
+double check_double() {
+    double value;
+    cin >> value;
+    while (cin.fail() || std::cin.peek() != '\n' || value < 0) {
         cin.clear();
         cin.ignore(1000, '\n');
         cout << "try again" << endl;
-        cin >> b;
+        cin >> value;
     }
-    return b;
+    return value;
 }
 
-bool check_bool(string a) {
-    cout << a << endl;
-    string b;
-    cin >> b;
+bool check_bool() {
+    char value;
+    cin >> value;
     bool flag = true;
     while (flag) {
-        if (b == "repairing") {
+        if (value == 'n') {
             return 0;
-        } else if (b == "working") {
+        } else if (value == 'Y') {
             return 1;
         } else {
             cin.clear();
             cin.ignore(1000, '\n');
-            cout << "Enter 'working' or 'repairing'" << endl;
-            cin >> b;
+            cout << "Enter Y/n" << endl;
+            cin >> value;
+        }
+    }
+}
+
+void change_KC(KC& k) {
+    cout << "Enter amount of working manufactories" << endl;
+    bool flag = true;
+    while (flag) {
+        k.Working_amount = check_int();
+        if (k.Working_amount <= k.Amount) {
+            flag = false;
+        } else {
+            cout << "try again" << endl;
         }
     }
 }
 
 
-
-KC get_data(KC m) {
-    cout << "Enter manufactory name\n";
-    cin >> m.Name;
-    m.Amount = check_int("Enter amount of manufactories");
-    m.Working_amount = check_int("Enter amoun of working manufactories");
-    m.Efficiency = check_double("Enter the value of 'efficiency'"); 
-    return m;
+KC get_KC_data(KC k) {
+    cout << "Enter manufactory name" << endl;
+    cin >> k.Name;
+    cout << "Enter amount of manufactories" << endl;
+    k.Amount = check_int();
+    cout << "Enter amount of working manufactories" << endl;
+    bool flag = true;
+    while (flag) {
+        k.Working_amount = check_int();
+        if (k.Working_amount <= k.Amount) {
+            flag = false;
+        } else {
+            cout << "try again" << endl;
+        }
+    }
+    cout << "Enter the value of 'efficiency'" << endl;
+    k.Efficiency = check_double(); 
+    return k;
 }
 
-void display_data(const KC& m) {
+void display_KC_data(const KC& k) {
+    cout << "-----------------------" << endl;
     cout << "Your KC:" << endl;
-    cout << "Name: " << m.Name << endl;
-    cout << "Amount of manufactories: " << m.Amount << endl;
-    cout << "Amount of working manufactories: " << m.Working_amount << endl;
-    cout << "The value of 'efficiency': " << m.Efficiency << endl;
+    cout << "Name: " << k.Name << endl;
+    cout << "Amount of manufactories: " << k.Amount << endl;
+    cout << "Amount of working manufactories: " << k.Working_amount << endl;
+    cout << "The value of 'efficiency': " << k.Efficiency << endl;
+    cout << "-----------------------" << endl;
 }
 
-KC add_KC(KC m) {
-    m = get_data(m);
-    display_data(m);
-    return m;
+KC add_KC(KC k) {
+    k = get_KC_data(k);
+    display_KC_data(k);
+    return k;
+}
+
+void change_pipe(pipeline& p) {
+    cout << "Is pipeline working? (Y/n)" << endl;
+    p.Status = check_bool();
 }
 
 
-
-pipeline getData(pipeline& p) {
-    cout << "Enter pipeline name\n";
+pipeline get_pipe_data(pipeline& p) {
+    cout << "Enter pipeline name" << endl;
     cin >> p.Name;
-    p.Lenght = check_int("Enter pipeline lenght");
-    p.Diameter = check_int("Enter pipeline d");
-    p.Status = check_bool("Enter pipeline status (repairing/working)");
+    cout << "Enter pipeline lenght" << endl;
+    p.Lenght = check_int();
+    cout << "Enter pipeline diameter" << endl;
+    p.Diameter = check_int();
+    cout << "Is pipeline working? (Y/n)" << endl;
+    p.Status = check_bool();
     return p;
 }
 
-void displayData(const pipeline& p) {
+void display_pipe_data(const pipeline& p) {
+    cout << "-----------------------" << endl;
     cout << "Your pipeline:" << endl;
     cout << "Name: " << p.Name << endl;
     cout << "Lenght: " << p.Lenght << endl;
@@ -116,16 +146,15 @@ void displayData(const pipeline& p) {
     } else {
         cout << "unknown" << endl;
     }
+    cout << "-----------------------" << endl;
 }
 
 pipeline add_pipeline(pipeline p) { 
-    p = getData(p);
-    displayData(p);
+    p = get_pipe_data(p);
+    display_pipe_data(p);
     return p;
 }
 
-/*что конкретно должно изменятся в 4 и 5 пункте*/
-/*Добавить проверку на то, что число рабающих цехов меньше, чем их колличество*/
 void menu() {
     cout << "1. Add pipeline" << endl;
     cout << "2. Add ceh" << endl;
@@ -137,21 +166,21 @@ void menu() {
     cout << "0. Close" << endl;
 }
 
-void save(pipeline p, KC m) {
+void save(pipeline p, KC k) {
     ofstream out;
     out.open("datas.txt");
-    out << p.Name << " ";
-    out << p.Lenght << " ";
-    out << p.Diameter << " ";
-    out << p.Status << " ";
-    out << m.Name << " ";
-    out << m.Amount << " ";
-    out << m.Working_amount << " ";
-    out << m.Efficiency << " ";
+    out << p.Name << endl;
+    out << p.Lenght << endl;
+    out << p.Diameter << endl;
+    out << p.Status << endl;
+    out << k.Name << endl;
+    out << k.Amount << endl;
+    out << k.Working_amount << endl;
+    out << k.Efficiency << endl;
     out.close();
 }
 
-void download(pipeline& p, KC& m) {
+void download(pipeline& p, KC& k) {
     std::ifstream in("datas.txt");
     if (in.is_open())
     {
@@ -164,10 +193,10 @@ void download(pipeline& p, KC& m) {
         p.Lenght = a;
         p.Diameter = b;
         p.Status = (f == 1) ? "working" : "repairing";
-        m.Name = name2;
-        m.Amount = c;
-        m.Working_amount = d;
-        m.Efficiency = x;
+        k.Name = name2;
+        k.Amount = c;
+        k.Working_amount = d;
+        k.Efficiency = x;
     }
     in.close();
 }
@@ -198,22 +227,26 @@ int main() {
             break;
         case 3:
             if (current_pipeline == 1) {
-                displayData(pipeline_1);
+                display_pipe_data(pipeline_1);
             } else {
                 cout << "no pipelines\n";
             }
             if (current_KC == 1) {
-                display_data(KC_1);
+                display_KC_data(KC_1);
             } else {
                 cout << "no KCs\n";
             }
             menu();
             break;
         case 4:
-            /*code*/
+            change_pipe(pipeline_1);
+            display_pipe_data(pipeline_1);
+            menu();
             break;
         case 5:
-            /*code*/
+            change_KC(KC_1);
+            display_KC_data(KC_1);
+            menu();
             break;
         case 6:
             save(pipeline_1, KC_1);
@@ -221,8 +254,10 @@ int main() {
             break;
         case 7:
             download(pipeline_1, KC_1);
-            displayData(pipeline_1);
-            display_data(KC_1);
+            display_pipe_data(pipeline_1);
+            display_KC_data(KC_1);
+            current_pipeline = 1;
+            current_KC = 1;
             menu();
             break;
         case 0:
