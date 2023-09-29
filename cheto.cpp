@@ -178,60 +178,34 @@ void menu() {
     cout << "0. Close" << endl;
 }
 
-void save_pipeline(const pipeline& p) {
-    ofstream out;
-    out.open("pipes.txt");
+void save_pipeline(ofstream& out, const pipeline& p) {
     out << p.Name << endl;
     out << p.Lenght << endl;
     out << p.Diameter << endl;
     out << p.Status << endl;
-    out.close();
 }
 
-void save_KC(const KC& k) {
-    ofstream out;
-    out.open("KCs.txt");
+void save_KC(ofstream& out, const KC& k) {
     out << k.Name << endl;
     out << k.Amount << endl;
     out << k.Working_amount << endl;
     out << k.Efficiency << endl;
-    out.close();
 }
 
-void download_pipeline(pipeline& p) {
-    std::ifstream in("pipes.txt");
-    if (in.is_open())
+void download_pipeline(ifstream& in, pipeline& p) {
     {
-        string name;
-        int lenght, diameter;
         bool status;
         in >> ws;
-        getline(in, name);
-        in >> lenght >> diameter >> status;
-        p.Name = name;
-        p.Lenght = lenght;
-        p.Diameter = diameter;
+        getline(in, p.Name);
+        in >> p.Lenght >> p.Diameter >> status;
         p.Status = (status == 1) ? "working" : "repairing";
     }
-    in.close();
 }
 
-void download_KC(KC& k) {
-    std::ifstream in("KCs.txt");
-    if (in.is_open())
-    {
-        string name;
-        int amount, work_amount;
-        double efficiency;
-        in >> ws;
-        getline(in, name);
-        in >> amount >> work_amount >> efficiency;
-        k.Name = name;
-        k.Amount = amount;
-        k.Working_amount = work_amount;
-        k.Efficiency = efficiency;
-    }
-    in.close();
+void download_KC(ifstream& in, KC& k) {
+    in >> ws;
+    getline(in, k.Name);
+    in >> k.Amount >> k.Working_amount >> k.Efficiency;
 }
 
 
@@ -271,7 +245,7 @@ int main() {
                 change_pipe(pipeline_1);
                 cout << pipeline_1;
             } else {
-                cout << "No pipeline" << endl;
+                cout << "No pipelines" << endl;
             }
             break;
         }
@@ -280,18 +254,45 @@ int main() {
                 change_KC(KC_1);
                 cout << KC_1;
             } else {
-                cout << "No KS" << endl;
+                cout << "No KCs" << endl;
             }
             break;
         }
         case 6: {
-            save_pipeline(pipeline_1);
-            save_KC(KC_1);
+            ofstream out;
+            out.open("datas.txt");
+            out.close();
+            if (!pipeline_1.Name.empty()) {
+                out.open("datas.txt", ios_base::app);
+                out << "pipes" << endl;
+                save_pipeline(out, pipeline_1);
+                out.close();
+            }
+            if (!KC_1.Name.empty()) {
+                out.open("datas.txt", ios_base::app);
+                out << "KCs" << endl;
+                save_KC(out, KC_1);
+                out.close();
+            }
+            
+            
             break;
         }
         case 7: {
-            download_pipeline(pipeline_1);
-            download_KC(KC_1);
+            std::ifstream in("datas.txt");
+            string flag1;
+            in >> flag1;
+            while (flag1 != "KCs" & !flag1.empty()) {
+                download_pipeline(in, pipeline_1);
+                flag1 = "";
+                in >> flag1;
+            } 
+            while (!flag1.empty()) {
+                download_KC(in, KC_1);
+                flag1 = "";
+                in >> flag1;
+            }
+            in.close();
             if (!pipeline_1.Name.empty()) {
                 cout << pipeline_1;
             } else {
