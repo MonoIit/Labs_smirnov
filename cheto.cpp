@@ -35,6 +35,13 @@ int check_int() {
     return value;
 }
 
+string read_string() {
+    string name;
+    cin >> ws;
+    getline(cin, name);
+    return name;
+}
+
 double check_double() {
     double value;
     cin >> value;
@@ -81,7 +88,7 @@ void change_KC(KC& k) {
 
 KC get_KC_data(KC k) {
     cout << "Enter manufactory name" << endl;
-    cin >> k.Name;
+    k.Name = read_string();
     cout << "Enter amount of manufactories" << endl;
     k.Amount = check_int();
     cout << "Enter amount of working manufactories" << endl;
@@ -123,7 +130,7 @@ void change_pipe(pipeline& p) {
 
 pipeline get_pipe_data(pipeline& p) {
     cout << "Enter pipeline name" << endl;
-    cin >> p.Name;
+    p.Name = read_string();
     cout << "Enter pipeline lenght" << endl;
     p.Lenght = check_int();
     cout << "Enter pipeline diameter" << endl;
@@ -192,7 +199,11 @@ void download(pipeline& p, KC& k, bool& current_pipeline, bool& current_KC) {
         int lenght, diameter, amount, work_amount;
         double efficiency;
         bool status;
-        in >> name1 >> lenght >> diameter >> status >> current_status1 >> name2 >> amount >> work_amount >> efficiency >> current_status2;;
+        getline(in, name1);
+        in >> lenght >> diameter >> status >> current_status1;
+        in >> ws;
+        getline(in, name2);
+        in >> amount >> work_amount >> efficiency >> current_status2;
         p.Name = name1;
         p.Lenght = lenght;
         p.Diameter = diameter;
