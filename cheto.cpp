@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <vector>
 
 using namespace std;
@@ -166,37 +167,42 @@ void menu() {
     cout << "0. Close" << endl;
 }
 
-void save(pipeline p, KC k) {
+void save(pipeline p, KC k, bool& current_pipeline, bool& current_KC) {
     ofstream out;
     out.open("datas.txt");
     out << p.Name << endl;
     out << p.Lenght << endl;
     out << p.Diameter << endl;
     out << p.Status << endl;
+    out << current_pipeline << endl;
     out << k.Name << endl;
     out << k.Amount << endl;
     out << k.Working_amount << endl;
     out << k.Efficiency << endl;
+    out << current_KC << endl;
     out.close();
 }
 
-void download(pipeline& p, KC& k) {
+void download(pipeline& p, KC& k, bool& current_pipeline, bool& current_KC) {
     std::ifstream in("datas.txt");
     if (in.is_open())
     {
+        bool current_status1, current_status2;
         string name1, name2;
-        int a, b, c, d;
-        double x;
-        bool f;
-        in >> name1 >> a >> b >> f >> name2 >> c >> d >> x;
+        int lenght, diameter, amount, work_amount;
+        double efficiency;
+        bool status;
+        in >> name1 >> lenght >> diameter >> status >> current_status1 >> name2 >> amount >> work_amount >> efficiency >> current_status2;;
         p.Name = name1;
-        p.Lenght = a;
-        p.Diameter = b;
-        p.Status = (f == 1) ? "working" : "repairing";
+        p.Lenght = lenght;
+        p.Diameter = diameter;
+        p.Status = (status == 1) ? "working" : "repairing";
+        current_pipeline = current_status1;
         k.Name = name2;
-        k.Amount = c;
-        k.Working_amount = d;
-        k.Efficiency = x;
+        k.Amount = amount;
+        k.Working_amount = work_amount;
+        k.Efficiency = efficiency;
+        current_KC = current_status2;
     }
     in.close();
 }
@@ -212,7 +218,7 @@ int main() {
     pipeline pipeline_1;
     while (flag) {
         int n;
-        cin >> n;
+        n = check_int();
         switch (n)
         {
         case 1:
@@ -249,22 +255,28 @@ int main() {
             menu();
             break;
         case 6:
-            save(pipeline_1, KC_1);
+            save(pipeline_1, KC_1, current_pipeline, current_KC);
             menu();
             break;
         case 7:
-            download(pipeline_1, KC_1);
-            display_pipe_data(pipeline_1);
-            display_KC_data(KC_1);
-            current_pipeline = 1;
-            current_KC = 1;
+            download(pipeline_1, KC_1, current_pipeline, current_KC);
+            if (current_pipeline == 1) {
+                display_pipe_data(pipeline_1);
+            } else {
+                cout << "no pipelines\n";
+            }
+            if (current_KC == 1) {
+                display_KC_data(KC_1);
+            } else {
+                cout << "no KCs\n";
+            }
             menu();
             break;
         case 0:
             flag = false;
             break;    
         default:
-            cout << "please, enter offered numbers" << endl;
+            cout << "please, enter suggested numbers" << endl;
             menu();
             break;
         }
