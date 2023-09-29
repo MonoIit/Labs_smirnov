@@ -106,19 +106,20 @@ KC get_KC_data(KC k) {
     return k;
 }
 
-void display_KC_data(const KC& k) {
-    cout << "-----------------------" << endl;
-    cout << "Your KC:" << endl;
-    cout << "Name: " << k.Name << endl;
-    cout << "Amount of manufactories: " << k.Amount << endl;
-    cout << "Amount of working manufactories: " << k.Working_amount << endl;
-    cout << "The value of 'efficiency': " << k.Efficiency << endl;
-    cout << "-----------------------" << endl;
+ostream& operator << (ostream& out, const KC& k) {
+    out << "-----------------------" << endl;
+    out << "Your KC:" << endl;
+    out << "Name: " << k.Name << endl;
+    out << "Amount of manufactories: " << k.Amount << endl;
+    out << "Amount of working manufactories: " << k.Working_amount << endl;
+    out << "The value of 'efficiency': " << k.Efficiency << endl;
+    out << "-----------------------" << endl;
+    return out;
 }
 
 KC add_KC(KC k) {
     k = get_KC_data(k);
-    display_KC_data(k);
+    cout << k;
     return k;
 }
 
@@ -140,32 +141,33 @@ pipeline get_pipe_data(pipeline& p) {
     return p;
 }
 
-void display_pipe_data(const pipeline& p) {
-    cout << "-----------------------" << endl;
-    cout << "Your pipeline:" << endl;
-    cout << "Name: " << p.Name << endl;
-    cout << "Lenght: " << p.Lenght << endl;
-    cout << "Diameter: " << p.Diameter << endl;
-    cout << "Status: ";
+ostream& operator << (ostream& out, const pipeline& p) {
+    out << "-----------------------" << endl;
+    out << "Your pipeline:" << endl;
+    out << "Name: " << p.Name << endl;
+    out << "Lenght: " << p.Lenght << endl;
+    out << "Diameter: " << p.Diameter << endl;
+    out << "Status: ";
     if (p.Status == 1) {
-        cout << "working" << endl;
+        out << "working" << endl;
     } else if (p.Status == 0) {
-        cout << "repairing" << endl;
+        out << "repairing" << endl;
     } else {
-        cout << "unknown" << endl;
+        out << "unknown" << endl;
     }
-    cout << "-----------------------" << endl;
+    out << "-----------------------" << endl;
+    return out;
 }
 
 pipeline add_pipeline(pipeline p) { 
     p = get_pipe_data(p);
-    display_pipe_data(p);
+    cout << p;
     return p;
 }
 
 void menu() {
     cout << "1. Add pipeline" << endl;
-    cout << "2. Add ceh" << endl;
+    cout << "2. Add KC" << endl;
     cout << "3. Check all elements" << endl;
     cout << "4. Change the pipeline" << endl;
     cout << "5. Change the ceh" << endl;
@@ -244,12 +246,12 @@ int main() {
             break;
         case 3:
             if (current_pipeline == 1) {
-                display_pipe_data(pipeline_1);
+                cout << pipeline_1;
             } else {
                 cout << "no pipelines\n";
             }
             if (current_KC == 1) {
-                display_KC_data(KC_1);
+                cout << KC_1;
             } else {
                 cout << "no KCs\n";
             }
@@ -257,12 +259,12 @@ int main() {
             break;
         case 4:
             change_pipe(pipeline_1);
-            display_pipe_data(pipeline_1);
+            cout << pipeline_1;
             menu();
             break;
         case 5:
             change_KC(KC_1);
-            display_KC_data(KC_1);
+            cout << KC_1;
             menu();
             break;
         case 6:
@@ -272,12 +274,12 @@ int main() {
         case 7:
             download(pipeline_1, KC_1, current_pipeline, current_KC);
             if (current_pipeline == 1) {
-                display_pipe_data(pipeline_1);
+                cout << pipeline_1;
             } else {
                 cout << "no pipelines\n";
             }
             if (current_KC == 1) {
-                display_KC_data(KC_1);
+                cout << KC_1;
             } else {
                 cout << "no KCs\n";
             }
