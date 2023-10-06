@@ -57,8 +57,8 @@ double check_double() {
 bool check_bool() {
     char value;
     cin >> value;
-    bool flag = true;
-    while (flag) {
+    while (1) 
+    {
         if (value == 'n') {
             return 0;
         } else if (value == 'Y') {
@@ -72,21 +72,19 @@ bool check_bool() {
     }
 }
 
-void change_KC(KC& k) {
+
+void change_KC(KC& k)
+ {
     cout << "Enter amount of working manufactories" << endl;
-    bool flag = true;
-    while (flag) {
+    while (1)
+     {
         k.Working_amount = check_int();
-        if (k.Working_amount <= k.Amount) {
-            flag = false;
-        } else {
-            cout << "try again" << endl;
-        }
+        if (k.Working_amount <= k.Amount) 
+            return;
+        cout << "try again" << endl;
     }
-}
-
-
-KC get_KC_data(KC k) {
+ }
+void get_KC_data(KC& k) {
     cout << "Enter manufactory name" << endl;
     k.Name = read_string();
     cout << "Enter amount of manufactories" << endl;
@@ -103,7 +101,6 @@ KC get_KC_data(KC k) {
     }
     cout << "Enter the value of 'efficiency'" << endl;
     k.Efficiency = check_double(); 
-    return k;
 }
 
 ostream& operator << (ostream& out, const KC& k) {
@@ -119,7 +116,7 @@ ostream& operator << (ostream& out, const KC& k) {
 
 KC add_KC() {
     KC k;
-    k = get_KC_data(k);
+    get_KC_data(k);
     cout << k;
     return k;
 }
@@ -130,7 +127,7 @@ void change_pipe(pipeline& p) {
 }
 
 
-pipeline get_pipe_data(pipeline& p) {
+void get_pipe_data(pipeline& p) {
     cout << "Enter pipeline name" << endl;
     p.Name = read_string();
     cout << "Enter pipeline lenght" << endl;
@@ -139,7 +136,6 @@ pipeline get_pipe_data(pipeline& p) {
     p.Diameter = check_int();
     cout << "Is pipeline working? (Y/n)" << endl;
     p.Status = check_bool();
-    return p;
 }
 
 ostream& operator << (ostream& out, const pipeline& p) {
@@ -162,7 +158,7 @@ ostream& operator << (ostream& out, const pipeline& p) {
 
 pipeline add_pipeline() {
     pipeline p;
-    p = get_pipe_data(p);
+    get_pipe_data(p);
     cout << p;
     return p;
 }
@@ -274,8 +270,6 @@ int main() {
                 save_KC(out, KC_1);
                 out.close();
             }
-            
-            
             break;
         }
         case 7: {
