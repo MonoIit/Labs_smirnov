@@ -4,6 +4,13 @@
 
 using namespace std;
 
+int KC::NextId = 2;
+
+KC::KC() {
+    this->id=NextId;
+    NextId += 2;
+}
+
 void KC::add_KC() {
     cout << "Enter manufactory name" << endl;
     Name = read_string();

@@ -6,7 +6,11 @@ using namespace std;
 
 int Pipe::NextId = 1;
 
-
+Pipe::Pipe()
+{
+    this->id=NextId;
+    NextId += 2;
+}
 
 void Pipe::add_pipe() {
     cout << "Enter pipeline name" << endl;

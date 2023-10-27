@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 #include "pipe.h"
 #include "KC.h"
@@ -22,8 +23,8 @@ void menu() {
 
 
 int main() {
-    Pipe pipeline_1;
-    KC KC_1;
+    unordered_map<int, Pipe> pipes;
+    unordered_map<int, KC> KCs;
     bool flag = true;
     while (flag) {
         menu();
@@ -32,27 +33,39 @@ int main() {
         switch (n)
         {
         case 1: {
-            pipeline_1.add_pipe();
+            {
+                Pipe pipe;
+                pipe.add_pipe();
+                pipes.insert({pipe.getId(), pipe});
+            }
             break;
         }
         case 2: {
-            KC_1.add_KC();
+            {
+                KC kc;
+                kc.add_KC();
+                KCs.insert({kc.getId(), kc});
+            }
             break;
         }
         case 3: {
-            if (!pipeline_1.Name.empty()) {
-                cout << pipeline_1;
+            if (!pipes.empty()) {
+                for (const auto& p: pipes) {
+                    cout << p.second;
+                }
             } else {
                 cout << "no pipelines\n";
             }
-            if (!KC_1.Name.empty()) {
-                cout << KC_1;
+            if (!KCs.empty()) {
+                for (const auto& k: KCs) {
+                    cout << k.second;
+                }
             } else {
                 cout << "no KCs\n";
             }
             break;
         }
-        case 4: {
+        /*case 4: {
             if (!pipeline_1.Name.empty()) {
                 pipeline_1.change_pipe();
                 cout << pipeline_1;
@@ -69,50 +82,74 @@ int main() {
                 cout << "No KCs" << endl;
             }
             break;
-        }
+        }*/
         case 6: {
             ofstream out;
             out.open("datas.txt");
             out.close();
-            if (!pipeline_1.Name.empty()) {
+            if (!pipes.empty()) {
                 out.open("datas.txt", ios_base::app);
                 out << "pipes" << endl;
-                save_pipe(out, pipeline_1);
+                out << pipes.size() << endl;
+                for (const auto& p: pipes) {
+                    save_pipe(out, p.second);
+                }
                 out.close();
             }
-            if (!KC_1.Name.empty()) {
+            if (!KCs.empty()) {
                 out.open("datas.txt", ios_base::app);
                 out << "KCs" << endl;
-                save_KC(out, KC_1);
+                out << KCs.size() << endl;
+                for (const auto& k: KCs) {
+                    save_KC(out, k.second);
+                }
                 out.close();
             }
             break;
         }
         case 7: {
-            std::ifstream in("datas.txt");
+            ifstream in("datas.txt");
             string flag1;
             in >> flag1;
-            while (flag1 != "KCs" & !flag1.empty()) {
-                download_pipe(in, pipeline_1);
-                flag1 = "";
-                in >> flag1;
-            } 
-            while (!flag1.empty()) {
-                download_KC(in, KC_1);
-                flag1 = "";
+            if (flag1 != "KCs" & !flag1.empty()){
+                int i;
+                in >> i;
+                for (int j = 0; j < i; j++) {
+                    in >> ws;
+                    Pipe p;
+                    download_pipe(in, p);
+                    pipes.insert({p.getId(), p});
+                }
+                in >> ws;
                 in >> flag1;
             }
+            in >> ws;
+            if (!flag1.empty()) {
+                int k;
+                in >> k;
+                for (int l = 0; l < k; l++) {
+                    in >> ws;
+                    KC k;
+                    download_KC(in, k);
+                    KCs.insert({k.getId(), k});
+                }
+            }
             in.close();
-            if (!pipeline_1.Name.empty()) {
-                cout << pipeline_1;
+            if (!pipes.empty()) {
+                for (const auto& p: pipes) {
+                    cout << p.second;
+                }
             } else {
                 cout << "no pipelines\n";
             }
-            if (!KC_1.Name.empty()) {
-                cout << KC_1;
+            if (!KCs.empty()) {
+                for (const auto& k: KCs) {
+                    cout << k.second;
+                }
             } else {
                 cout << "no KCs\n";
             }
+
             break;
         }
         case 0: {
@@ -125,6 +162,7 @@ int main() {
         }
         }
     }
+    
     return 0;
 }
 

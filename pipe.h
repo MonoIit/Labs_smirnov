@@ -9,10 +9,12 @@ class Pipe {
     int id;
     static int NextId;
 public:
+    int getId() const {return id; }
     string Name;
     int Lenght;
     int Diameter;
     bool Status;
+    Pipe();
     void add_pipe();
     void change_pipe();
     friend ostream& operator << (ostream& out, const Pipe& p);
@@ -29,9 +31,8 @@ inline void save_pipe(ofstream& out, const Pipe& p) {
 
 inline void download_pipe(ifstream& in, Pipe& p) {
     {
-        bool status;
-        in >> ws;
         getline(in, p.Name);
+        in >> ws;
         in >> p.Lenght >> p.Diameter >> p.Status;
     }
 }
