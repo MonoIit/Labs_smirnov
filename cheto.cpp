@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <algorithm>
 #include "pipe.h"
 #include "KC.h"
 #include "tools.h"
@@ -21,6 +22,27 @@ void menu() {
     cout << "0. Close" << endl;
 }
 
+void viewPipes(const unordered_map<int, Pipe>& pipes) {
+    for (const auto& p: pipes) {
+        cout << p.second;
+    }
+}
+
+void viewKCs(const unordered_map<int, KC>& KCs) {
+    for (const auto& k: KCs) {
+        cout << k.first << endl;
+        cout << k.second;
+    }
+}
+
+bool check_id(const int& r, const unordered_map<int, Pipe>& pipes) {
+    for (const auto& p: pipes) {
+        if (p.first == r) {
+            return true;
+        }
+    }
+    return false;
+}
 
 int main() {
     unordered_map<int, Pipe> pipes;
@@ -50,31 +72,76 @@ int main() {
         }
         case 3: {
             if (!pipes.empty()) {
-                for (const auto& p: pipes) {
-                    cout << p.second;
-                }
+                viewPipes(pipes);
             } else {
                 cout << "no pipelines\n";
             }
             if (!KCs.empty()) {
-                for (const auto& k: KCs) {
-                    cout << k.second;
-                }
+                viewKCs(KCs);
             } else {
                 cout << "no KCs\n";
             }
             break;
         }
-        /*case 4: {
-            if (!pipeline_1.Name.empty()) {
-                pipeline_1.change_pipe();
-                cout << pipeline_1;
+        case 4: {
+            if (!pipes.empty()) {
+                cout << "1. Change one pipe" << endl;
+                cout << "2. Change some pipes" << endl;
+                while (1) {
+                    int choice;
+                    cin >> choice;
+                    if (choice == 1) {
+                        viewPipes(pipes);
+                        cout << "Choose pipe`s id" << endl;
+                        while(1) {
+                            int ID;
+                            cin >> ID;
+                            if (check_id(ID, pipes)) {
+                                pipes[ID].change_pipe();
+                                break;
+                            } else {
+                                cout << "No pipe with this ID" << endl;
+                            }
+                        }
+                        break;
+                    } else if (choice == 2) {
+                        viewPipes(pipes);
+                        vector<int> Ids;
+                        cout << "Choose pipe`s id (choose 0 if you are done)" << endl;
+                        while(1) {
+                            int ID;
+                            cin >> ID;
+                            if (ID == 0) {
+                                break;
+                            } else if (find(Ids.begin(), Ids.end(), ID) != Ids.end()) {
+                                cout << "This ID has already choosen" << endl;
+                            } else if (check_id(ID, pipes)) {
+                                Ids.push_back(ID);
+                            } else {
+                                cout << "No pipe with this ID" << endl;
+                            }
+                            if (Ids.size() == pipes.size()) {
+                                break;
+                            }
+                        }
+                        if (!Ids.empty()) {
+                            for (int i : Ids) {
+                                pipes[i].change_pipe();
+                            }
+                        } else {
+                            cout << "You did not choose id" << endl;
+                        }
+                        break;
+                    } else {
+                        cout << "try again" << endl;
+                    }
+                }
             } else {
                 cout << "No pipelines" << endl;
             }
             break;
         }
-        case 5: {
+        /*case 5: {
             if (!KC_1.Name.empty()) {
                 KC_1.change_KC();
                 cout << KC_1;

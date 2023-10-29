@@ -24,13 +24,13 @@ void Pipe::add_pipe() {
 }
 
 void Pipe::change_pipe() {
-    cout << "Is pipeline working? (Y/n)" << endl;
-    Status = check_bool();
+    Status = (Status == 1) ? 0 : 1;
 }
 
 ostream& operator << (ostream& out, const Pipe& p) {
     out << "-----------------------" << endl;
     out << "Your pipeline:" << endl;
+    out << "ID: " << p.getId() << endl; 
     out << "Name: " << p.Name << endl;
     out << "Lenght: " << p.Lenght << endl;
     out << "Diameter: " << p.Diameter << endl;
