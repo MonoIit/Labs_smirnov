@@ -15,6 +15,7 @@ public:
     int Diameter;
     bool Status;
     Pipe();
+    ~Pipe();
     void add_pipe();
     void change_pipe();
     friend ostream& operator << (ostream& out, const Pipe& p);

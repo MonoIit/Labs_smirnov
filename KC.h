@@ -15,6 +15,7 @@ public:
     int Working_amount;
     double Efficiency;
     KC();
+    ~KC();
     void add_KC();
     void change_KC();
     friend ostream& operator << (ostream& out, const KC& m);

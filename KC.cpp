@@ -11,6 +11,9 @@ KC::KC() {
     NextId += 2;
 }
 
+KC::~KC() {
+}
+
 void KC::add_KC() {
     cout << "Enter manufactory name" << endl;
     Name = read_string();
@@ -45,8 +48,9 @@ void KC::change_KC()
 ostream& operator << (ostream& out, const KC& k) {
     out << "-----------------------" << endl;
     out << "Your KC:" << endl;
-    out << "Name: " << k.Name << endl;
-    out << "Amount of manufactories: " << k.Amount << endl;
+    out << "ID: " << k.getId() << endl;
+    out << "Name: " << k.Name <<endl;
+    out << "Amount of manufactor ies: " << k.Amount << endl;
     out << "Amount of working manufactories: " << k.Working_amount << endl;
     out << "The value of 'efficiency': " << k.Efficiency << endl;
     out << "-----------------------" << endl;

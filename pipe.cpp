@@ -12,6 +12,9 @@ Pipe::Pipe()
     NextId += 2;
 }
 
+Pipe::~Pipe(){ 
+}
+
 void Pipe::add_pipe() {
     cout << "Enter pipeline name" << endl;
     Name = read_string();

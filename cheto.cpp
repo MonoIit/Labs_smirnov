@@ -10,6 +10,121 @@
 
 using namespace std;
 
+template <typename T>
+vector<int> choose_id(const unordered_map<int, T>& mas) {
+    vector<int> Ids;
+    cout << "Choose pipe`s id (choose 0 if you are done)" << endl;
+    while(1) {
+        int ID;
+        ID = check_int();
+        if (ID == 0) {
+            break;
+        } else if (find(Ids.begin(), Ids.end(), ID) != Ids.end()) {
+            cout << "This ID has already choosen" << endl;
+        } else if (check_id(ID, mas)) {
+            Ids.push_back(ID);
+        } else {
+            cout << "No pipe with this ID" << endl;
+        }
+        if (Ids.size() == mas.size()) {
+            break;
+        }
+    }
+    return Ids;
+}
+
+template <typename T>
+void filter_name(const unordered_map<int, T>& mas) {
+    string find;
+    cout << "Enter name" << endl;
+    find = read_string();
+    for (const auto& m : mas) {
+        if (m.second.Name.find(find) != string::npos) {
+            cout << m.second;
+        }
+    }
+}
+
+void filterP(const unordered_map<int, Pipe>& pipes) {
+    cout << "1. find by name" << endl;
+    cout << "2. find by status" << endl;
+    while(1) {
+        int i;
+        i = check_int();
+        if (i == 1) {
+            filter_name(pipes);
+        } else if (i == 2) {
+            cout << "1. find working pipes" << endl;
+            cout << "2. find repairing pipes" << endl;
+            while(1) {
+                int j;
+                j = check_int();
+                if (j == 1) {
+                    for (const auto& p : pipes) {
+                        if (p.second.Status == 1) {
+                            cout << p.second;
+                        }
+                    }
+                } else if (j == 2) {
+                    for (const auto& p : pipes) {
+                        if (p.second.Status == 0) {
+                            cout << p.second;
+                        }
+                    }
+                } else {
+                    cout << "try again" << endl;
+                }
+                break;
+            }
+            break;
+        } else {
+            cout << "try again" << endl;
+        }
+        break;
+    }
+}
+
+void filterK(const unordered_map<int, KC>& KCs) {
+    cout << "1. find by name" << endl;
+    cout << "2. find by unused cehs" << endl;
+    while(1) {
+        int i;
+        i = check_int();
+        if (i == 1) {
+            filter_name(KCs);
+        } else if (i == 2) {
+            cout << "1. Less than..." << endl;
+            cout << "2. More than..." << endl;
+            while(1) {
+                int j;
+                j = check_int();
+                if (j == 1) {
+                    double h = check_double();
+                    for (const auto& k : KCs) {
+                        if (k.second.Working_amount/k.second.Amount <= h) {
+                            cout << k.second;
+                        }
+                    }
+                } else if (j == 2) {
+                    double h = check_double();
+                    for (const auto& k : KCs) {
+                        if (k.second.Amount/k.second.Working_amount >= h) {
+                            cout << k.second;
+                        }
+                    }
+                } else {
+                    cout << "try again" << endl;
+                }
+                break;
+            }
+            break;
+        } else {
+            cout << "try again" << endl;
+        }
+        break;
+    }
+}
+
 
 void menu() {
     cout << "1. Add pipeline" << endl;
@@ -22,22 +137,17 @@ void menu() {
     cout << "0. Close" << endl;
 }
 
-void viewPipes(const unordered_map<int, Pipe>& pipes) {
-    for (const auto& p: pipes) {
+template <typename T>
+void view(const unordered_map<int, T>& mas) {
+    for (const auto& p: mas) {
         cout << p.second;
     }
 }
 
-void viewKCs(const unordered_map<int, KC>& KCs) {
-    for (const auto& k: KCs) {
-        cout << k.first << endl;
-        cout << k.second;
-    }
-}
-
-bool check_id(const int& r, const unordered_map<int, Pipe>& pipes) {
-    for (const auto& p: pipes) {
-        if (p.first == r) {
+template <typename T>
+bool check_id(const int& r, const unordered_map<int, T>& mas) {
+    for (const auto& m: mas) {
+        if (m.first == r) {
             return true;
         }
     }
@@ -72,12 +182,12 @@ int main() {
         }
         case 3: {
             if (!pipes.empty()) {
-                viewPipes(pipes);
+                view(pipes);
             } else {
                 cout << "no pipelines\n";
             }
             if (!KCs.empty()) {
-                viewKCs(KCs);
+                view(KCs);
             } else {
                 cout << "no KCs\n";
             }
@@ -85,48 +195,42 @@ int main() {
         }
         case 4: {
             if (!pipes.empty()) {
-                cout << "1. Change one pipe" << endl;
-                cout << "2. Change some pipes" << endl;
-                while (1) {
-                    int choice;
-                    cin >> choice;
-                    if (choice == 1) {
-                        viewPipes(pipes);
-                        cout << "Choose pipe`s id" << endl;
-                        while(1) {
-                            int ID;
-                            cin >> ID;
-                            if (check_id(ID, pipes)) {
-                                pipes[ID].change_pipe();
-                                break;
-                            } else {
-                                cout << "No pipe with this ID" << endl;
+                cout << "1. Delete" << endl;
+                cout << "2. Change status" << endl;
+                int i;
+                bool fltr;
+                vector<int> Ids;
+                while(1) {
+                    i = check_int();
+                    if (i == 2) {
+                        cout << "Use filter(Y/n)" << endl;
+                        fltr = check_bool();
+                        if (fltr) {
+                            filterP(pipes);
+                        } else {
+                            view(pipes);
+                        }
+                        Ids = choose_id(pipes);
+                        if (!Ids.empty()) {
+                            for (int j : Ids) {
+                                pipes[j].change_pipe();
                             }
+                        } else {
+                            cout << "You did not choose id" << endl;
                         }
                         break;
-                    } else if (choice == 2) {
-                        viewPipes(pipes);
-                        vector<int> Ids;
-                        cout << "Choose pipe`s id (choose 0 if you are done)" << endl;
-                        while(1) {
-                            int ID;
-                            cin >> ID;
-                            if (ID == 0) {
-                                break;
-                            } else if (find(Ids.begin(), Ids.end(), ID) != Ids.end()) {
-                                cout << "This ID has already choosen" << endl;
-                            } else if (check_id(ID, pipes)) {
-                                Ids.push_back(ID);
-                            } else {
-                                cout << "No pipe with this ID" << endl;
-                            }
-                            if (Ids.size() == pipes.size()) {
-                                break;
-                            }
+                    } else if (i == 1) {
+                        cout << "Use filter(Y/n)" << endl;
+                        fltr = check_bool();
+                        if (fltr) {
+                            filterP(pipes);
+                        } else {
+                            view(pipes);
                         }
+                        Ids = choose_id(pipes);
                         if (!Ids.empty()) {
-                            for (int i : Ids) {
-                                pipes[i].change_pipe();
+                            for (int j : Ids) {
+                                pipes.erase(j);
                             }
                         } else {
                             cout << "You did not choose id" << endl;
@@ -135,27 +239,73 @@ int main() {
                     } else {
                         cout << "try again" << endl;
                     }
-                }
+                }      
             } else {
                 cout << "No pipelines" << endl;
             }
             break;
         }
-        /*case 5: {
-            if (!KC_1.Name.empty()) {
-                KC_1.change_KC();
-                cout << KC_1;
+        case 5: {
+            if (!KCs.empty()) {
+                cout << "1. Delete" << endl;
+                cout << "2. Change amount of working" << endl;
+                int i;
+                bool fltr;
+                vector<int> Ids;
+                while(1) {
+                    i = check_int();
+                    if (i == 2) {
+                        cout << "Use filter(Y/n)" << endl;
+                        fltr = check_bool();
+                        if (fltr) {
+                            filterK(KCs);
+                        } else {
+                            view(KCs);
+                        }
+                        Ids = choose_id(KCs);
+                        if (!Ids.empty()) {
+                            for (int j : Ids) {
+                                KCs[j].change_KC();
+                            }
+                        } else {
+                            cout << "You did not choose id" << endl;
+                        }
+                        break;
+                    } else if (i == 1) {
+                        cout << "Use filter(Y/n)" << endl;
+                        fltr = check_bool();
+                        if (fltr) {
+                            filterK(KCs);
+                        } else {
+                            view(KCs);
+                        }
+                        Ids = choose_id(KCs);
+                        if (!Ids.empty()) {
+                            for (int j : Ids) {
+                                KCs.erase(j);
+                            }
+                        } else {
+                            cout << "You did not choose id" << endl;
+                        }
+                        break;
+                    } else {
+                        cout << "try again" << endl;
+                    }
+                }      
             } else {
-                cout << "No KCs" << endl;
+                cout << "No pipelines" << endl;
             }
             break;
-        }*/
+        }
         case 6: {
+            cout << "Enter file name to save" << endl;
+            string fname;
+            fname = read_string();
             ofstream out;
-            out.open("datas.txt");
+            out.open(fname);
             out.close();
             if (!pipes.empty()) {
-                out.open("datas.txt", ios_base::app);
+                out.open(fname, ios_base::app);
                 out << "pipes" << endl;
                 out << pipes.size() << endl;
                 for (const auto& p: pipes) {
@@ -164,7 +314,7 @@ int main() {
                 out.close();
             }
             if (!KCs.empty()) {
-                out.open("datas.txt", ios_base::app);
+                out.open(fname, ios_base::app);
                 out << "KCs" << endl;
                 out << KCs.size() << endl;
                 for (const auto& k: KCs) {
@@ -175,7 +325,10 @@ int main() {
             break;
         }
         case 7: {
-            ifstream in("datas.txt");
+            cout << "Enter file name download from" << endl;
+            string fname;
+            fname = read_string();
+            ifstream in(fname);
             string flag1;
             in >> flag1;
             if (flag1 != "KCs" & !flag1.empty()){
@@ -232,6 +385,8 @@ int main() {
     
     return 0;
 }
+
+// Логирование
 
 
 
