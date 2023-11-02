@@ -34,3 +34,6 @@ inline void download_KC(ifstream& in, KC& k) {
     getline(in, k.Name);
     in >> k.Amount >> k.Working_amount >> k.Efficiency;
 }
+
+
+

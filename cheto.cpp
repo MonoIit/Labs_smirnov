@@ -4,32 +4,42 @@
 #include <unordered_map>
 #include <vector>
 #include <algorithm>
+#include <format>
+#include <chrono>
 #include "pipe.h"
 #include "KC.h"
 #include "tools.h"
 
 using namespace std;
+using namespace chrono;
 
 template <typename T>
 vector<int> choose_id(const unordered_map<int, T>& mas) {
     vector<int> Ids;
     cout << "Choose pipe`s id (choose 0 if you are done)" << endl;
+    cerr << "User choosing IDs" << endl;
     while(1) {
         int ID;
         ID = check_int();
         if (ID == 0) {
+            cerr << "User stoped choosing IDs" << endl;
             break;
         } else if (find(Ids.begin(), Ids.end(), ID) != Ids.end()) {
             cout << "This ID has already choosen" << endl;
+            cerr << "User chose ID that is already chosen";
         } else if (check_id(ID, mas)) {
             Ids.push_back(ID);
+            cerr << "User chose ID: " << ID << endl;
         } else {
             cout << "No pipe with this ID" << endl;
+            cerr << "User choose incorrect ID" << endl;
         }
         if (Ids.size() == mas.size()) {
+            cerr << "All IDs are choosed" << endl;
             break;
         }
     }
+    cerr << "IDs have been choosen" << endl;
     return Ids;
 }
 
@@ -38,61 +48,79 @@ void filter_name(const unordered_map<int, T>& mas) {
     string find;
     cout << "Enter name" << endl;
     find = read_string();
+    cerr << "User chose name for using filter" << endl;
     for (const auto& m : mas) {
         if (m.second.Name.find(find) != string::npos) {
             cout << m.second;
         }
     }
+    cerr << "Objects has been displayed" << endl;
 }
 
 void filterP(const unordered_map<int, Pipe>& pipes) {
+    cerr << "User used filter for pipes" << endl;
     cout << "1. find by name" << endl;
     cout << "2. find by status" << endl;
     while(1) {
         int i;
         i = check_int();
         if (i == 1) {
+            cerr << "User used filter by names" << endl;
             filter_name(pipes);
         } else if (i == 2) {
+            cerr << "User used filter by status" << endl;
             cout << "1. find working pipes" << endl;
             cout << "2. find repairing pipes" << endl;
             while(1) {
                 int j;
                 j = check_int();
                 if (j == 1) {
+                    cerr << "User found working pipes" << endl;
                     for (const auto& p : pipes) {
                         if (p.second.Status == 1) {
                             cout << p.second;
+                            cerr << "Pipe with ID: " << p.second.getId() << "has been displayed" << endl;
                         }
                     }
                 } else if (j == 2) {
+                    cerr << "User found repairing pipes" << endl;
                     for (const auto& p : pipes) {
                         if (p.second.Status == 0) {
                             cout << p.second;
+                            cerr << "Pipe with ID: " << p.second.getId() << "has been displayed" << endl;
                         }
                     }
                 } else {
                     cout << "try again" << endl;
+                    cerr << "User chose incorrect option" << endl;
                 }
+                cerr << "Pipes have been displayed" << endl;
                 break;
             }
             break;
         } else {
             cout << "try again" << endl;
+            cerr << "User chose incorrect option" << endl;
         }
+        cerr << "User stoped using filter" << endl;
         break;
     }
 }
 
+
+///log
 void filterK(const unordered_map<int, KC>& KCs) {
+    cerr << "User used filter for KCs" << endl;
     cout << "1. find by name" << endl;
     cout << "2. find by unused cehs" << endl;
     while(1) {
         int i;
         i = check_int();
         if (i == 1) {
+            cerr << "User used filter by names" << endl;
             filter_name(KCs);
         } else if (i == 2) {
+            cerr << "User chose filter by unused cehs" << endl;
             cout << "1. Less than..." << endl;
             cout << "2. More than..." << endl;
             while(1) {
@@ -103,24 +131,29 @@ void filterK(const unordered_map<int, KC>& KCs) {
                     for (const auto& k : KCs) {
                         if (k.second.Working_amount/k.second.Amount <= h) {
                             cout << k.second;
+                            cerr << "KC with ID: " << k.second.getId() << "has been displayed" << endl;
                         }
                     }
                 } else if (j == 2) {
                     double h = check_double();
                     for (const auto& k : KCs) {
-                        if (k.second.Amount/k.second.Working_amount >= h) {
+                        if (k.second.Working_amount/k.second.Amount >= h) {
                             cout << k.second;
+                            cerr << "KC with ID: " << k.second.getId() << "has been displayed" << endl;
                         }
                     }
                 } else {
                     cout << "try again" << endl;
+                    cerr << "User chose incorrect option" << endl;
                 }
                 break;
             }
             break;
         } else {
             cout << "try again" << endl;
+            cerr << "User chose incorrect option" << endl;
         }
+        cerr << "User stoped using filter" << endl;
         break;
     }
 }
@@ -154,14 +187,22 @@ bool check_id(const int& r, const unordered_map<int, T>& mas) {
     return false;
 }
 
+
 int main() {
+	redirect_output_wrapper cerr_out(cerr);
+	string time = "new";
+	ofstream logfile("log_"+ time);
+	if (logfile)
+		cerr_out.redirect(logfile);
+    cerr << "Programm start" << endl;
     unordered_map<int, Pipe> pipes;
     unordered_map<int, KC> KCs;
-    bool flag = true;
-    while (flag) {
+    bool flag1 = true;
+    while (flag1) {
         menu();
         int n;
         n = check_int();
+        cerr << "User chose option " << n << endl; 
         switch (n)
         {
         case 1: {
@@ -169,6 +210,7 @@ int main() {
                 Pipe pipe;
                 pipe.add_pipe();
                 pipes.insert({pipe.getId(), pipe});
+                cerr << "User added a pipe" << endl;
             }
             break;
         }
@@ -177,6 +219,7 @@ int main() {
                 KC kc;
                 kc.add_KC();
                 KCs.insert({kc.getId(), kc});
+                cerr << "User added a KC" << endl;
             }
             break;
         }
@@ -231,13 +274,16 @@ int main() {
                         if (!Ids.empty()) {
                             for (int j : Ids) {
                                 pipes.erase(j);
+                                cerr << "User deleted a pipe with id " << j << endl; 
                             }
                         } else {
                             cout << "You did not choose id" << endl;
+                            cerr << "User did not choose id" << endl;
                         }
                         break;
                     } else {
                         cout << "try again" << endl;
+                        cerr << "User choose incorrect option" << endl;
                     }
                 }      
             } else {
@@ -301,6 +347,7 @@ int main() {
             cout << "Enter file name to save" << endl;
             string fname;
             fname = read_string();
+            cerr << "User enter file name for saving" << endl;
             ofstream out;
             out.open(fname);
             out.close();
@@ -322,12 +369,14 @@ int main() {
                 }
                 out.close();
             }
+            cerr << "User saved information in file " << fname << endl;
             break;
         }
         case 7: {
             cout << "Enter file name download from" << endl;
             string fname;
             fname = read_string();
+            cerr << "User enter file name for download from" << endl;
             ifstream in(fname);
             string flag1;
             in >> flag1;
@@ -369,20 +418,22 @@ int main() {
             } else {
                 cout << "no KCs\n";
             }
-
+            cerr << "User downloaded information" << endl;
             break;
         }
         case 0: {
-            flag = false;
+            flag1 = false;
+            cerr << "User finished work" << endl;
             break;  
         }  
         default: {
             cout << "please, enter suggested numbers" << endl;
+            cerr << "User chose incorect option" << endl;
             break;
         }
         }
     }
-    
+    cerr << "Programm finished" << endl;
     return 0;
 }
 
