@@ -19,11 +19,11 @@ void KC::add_KC() {
     Name = read_string();
     cerr << "User entered the name: " << Name << endl;
     cout << "Enter amount of manufactories" << endl;
-    Amount = check_int();
+    Amount = check(Amount);
     cerr << "User enterd the amount of manufactories: " << Amount << endl;
     cout << "Enter amount of working manufactories" << endl;
     while (1) {
-        Working_amount = check_int();
+        Working_amount = check(Working_amount);
         if (Working_amount <= Amount) {
             cerr << "User entered amount of working manufactories :" << Working_amount << endl;
             break;
@@ -33,7 +33,7 @@ void KC::add_KC() {
         }
     }
     cout << "Enter the value of 'efficiency'" << endl;
-    Efficiency = check_double();
+    Efficiency = check(Efficiency);
     cerr << "User entered efficiency: " << Efficiency << endl; 
 }
 
@@ -42,7 +42,7 @@ void KC::change_KC()
     cout << "Enter amount of working manufactories" << endl;
     while (1)
      {
-        Working_amount = check_int();
+        Working_amount = check(Working_amount);
         if (Working_amount <= Amount) {
             cerr << "User changed amount of working manufactories to " << Working_amount << endl;
             return;

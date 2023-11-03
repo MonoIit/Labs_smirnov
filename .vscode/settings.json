@@ -57,6 +57,12 @@
         "xutility": "cpp",
         "xhash": "cpp",
         "chrono": "cpp",
-        "unordered_map": "cpp"
+        "unordered_map": "cpp",
+        "algorithm": "cpp",
+        "forward_list": "cpp",
+        "iomanip": "cpp",
+        "list": "cpp",
+        "optional": "cpp",
+        "sstream": "cpp"
     }
 }

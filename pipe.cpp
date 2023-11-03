@@ -20,13 +20,13 @@ void Pipe::add_pipe() {
     Name = read_string();
     cerr << "User entered the name: " << Name << endl;
     cout << "Enter pipeline lenght" << endl;
-    Lenght = check_int();
+    Lenght = check(Lenght);
     cerr << "User entered the Lenght: " << Lenght << endl;
     cout << "Enter pipeline diameter" << endl;
-    Diameter = check_int();
+    Diameter = check(Diameter);
     cerr << "User entered the Diameter: " << Diameter << endl;
-    cout << "Is pipeline working? (Y/n)" << endl;
-    Status = check_bool();
+    cout << "Is pipeline working? (1/0)" << endl;
+    Status = check(Status);
     cerr << "User chose " << ((Status == 1) ? "working" : "repairing") << "pipe" << endl;
 }
 

@@ -20,7 +20,7 @@ vector<int> choose_id(const unordered_map<int, T>& mas) {
     cerr << "User choosing IDs" << endl;
     while(1) {
         int ID;
-        ID = check_int();
+        ID = check(ID);
         if (ID == 0) {
             cerr << "User stoped choosing IDs" << endl;
             break;
@@ -63,7 +63,7 @@ void filterP(const unordered_map<int, Pipe>& pipes) {
     cout << "2. find by status" << endl;
     while(1) {
         int i;
-        i = check_int();
+        i = check(i);
         if (i == 1) {
             cerr << "User used filter by names" << endl;
             filter_name(pipes);
@@ -73,7 +73,7 @@ void filterP(const unordered_map<int, Pipe>& pipes) {
             cout << "2. find repairing pipes" << endl;
             while(1) {
                 int j;
-                j = check_int();
+                j = check(j);
                 if (j == 1) {
                     cerr << "User found working pipes" << endl;
                     for (const auto& p : pipes) {
@@ -115,7 +115,7 @@ void filterK(const unordered_map<int, KC>& KCs) {
     cout << "2. find by unused factories" << endl;
     while(1) {
         int i;
-        i = check_int();
+        i = check(i);
         if (i == 1) {
             cerr << "User used filter by names" << endl;
             filter_name(KCs);
@@ -125,9 +125,10 @@ void filterK(const unordered_map<int, KC>& KCs) {
             cout << "2. More than..." << endl;
             while(1) {
                 int j;
-                j = check_int();
+                j = check(j);
                 if (j == 1) {
-                    double h = check_double();
+                    double h;
+                    h = check(h);
                     for (const auto& k : KCs) {
                         if (k.second.Working_amount/k.second.Amount <= h) {
                             cout << k.second;
@@ -135,7 +136,8 @@ void filterK(const unordered_map<int, KC>& KCs) {
                         }
                     }
                 } else if (j == 2) {
-                    double h = check_double();
+                    double h;
+                    h = check(h);
                     for (const auto& k : KCs) {
                         if (k.second.Working_amount/k.second.Amount >= h) {
                             cout << k.second;
@@ -188,8 +190,9 @@ bool check_id(const int& r, const unordered_map<int, T>& mas) {
 }
 
 void useFilterP(const unordered_map<int, Pipe>& mas) {
-    cout << "Use filter(Y/n)" << endl;
-    bool fltr = check_bool();
+    cout << "Use filter(1/0)" << endl;
+    bool fltr;
+    fltr = check(fltr);
     if (fltr) {
         filterP(mas);
     } else {
@@ -198,8 +201,9 @@ void useFilterP(const unordered_map<int, Pipe>& mas) {
 }
 
 void useFilterK(const unordered_map<int, KC>& mas) {
-    cout << "Use filter(Y/n)" << endl;
-    bool fltr = check_bool();
+    cout << "Use filter(1/0)" << endl;
+    bool fltr;
+    fltr = check(fltr);
     if (fltr) {
         filterK(mas);
     } else {
@@ -219,7 +223,8 @@ void viewAll(const unordered_map<int, T>& mas) {
 
 int main() {
 	redirect_output_wrapper cerr_out(cerr);
-	string time = "new";
+    string time = "now";
+    //string time = std::format("{:%d_%m_%Y %H_%M_%OS}", system_clock::now());
 	ofstream logfile("log_"+ time);
 	if (logfile)
 		cerr_out.redirect(logfile);
@@ -230,7 +235,7 @@ int main() {
     while (flag1) {
         menu();
         int n;
-        n = check_int();
+        n = check(n);
         cerr << "User chose option " << n << endl; 
         switch (n)
         {
@@ -256,7 +261,8 @@ int main() {
             cout << "1. Display pipes" << endl;
             cout << "2. Display KCs" << endl;
             cout << "3. Display all" << endl;
-            int choice1 = check_int();
+            int choice1;
+            choice1 = check(choice1);
             while(1) {
                 if (choice1 == 3) {
                     cerr << "User displayed all information" << endl;
@@ -283,10 +289,9 @@ int main() {
                 cout << "1. Delete" << endl;
                 cout << "2. Change status" << endl;
                 int i;
-                bool fltr;
                 vector<int> Ids;
                 while(1) {
-                    i = check_int();
+                    i = check(i);
                     if (i == 2) {
                         useFilterP(pipes);
                         Ids = choose_id(pipes);
@@ -329,7 +334,7 @@ int main() {
                 bool fltr;
                 vector<int> Ids;
                 while(1) {
-                    i = check_int();
+                    i = check(i);
                     if (i == 2) {
                         useFilterK(KCs);
                         Ids = choose_id(KCs);

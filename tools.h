@@ -6,9 +6,9 @@ using namespace std;
 
 #define printpar(out, mas) out << "no " << #mas << endl;
 
-/*template <typename T>
-T check() {
-    T value;
+template <typename T>
+inline T check(T a) {
+    T value = a;
     cin >> value;
     while (cin.fail() || cin.peek() != '\n' || value < 0) {
         cin.clear();
@@ -17,7 +17,7 @@ T check() {
         cin >> value;
     }
     return value;
-}*/
+}
 
 inline string read_string() {
     string name;
@@ -26,7 +26,7 @@ inline string read_string() {
     return name;
 }   
 
-inline int check_int() {
+/*inline int check_int() {
     int value;
     cin >> value;
     while (cin.fail() || std::cin.peek() != '\n' || value < 0) {
@@ -66,7 +66,7 @@ inline bool check_bool() {
             cin >> value;
         }
     }
-}
+}*/
 
 class redirect_output_wrapper
 {
