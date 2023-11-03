@@ -112,7 +112,7 @@ void filterP(const unordered_map<int, Pipe>& pipes) {
 void filterK(const unordered_map<int, KC>& KCs) {
     cerr << "User used filter for KCs" << endl;
     cout << "1. find by name" << endl;
-    cout << "2. find by unused cehs" << endl;
+    cout << "2. find by unused factories" << endl;
     while(1) {
         int i;
         i = check_int();
@@ -120,7 +120,7 @@ void filterK(const unordered_map<int, KC>& KCs) {
             cerr << "User used filter by names" << endl;
             filter_name(KCs);
         } else if (i == 2) {
-            cerr << "User chose filter by unused cehs" << endl;
+            cerr << "User chose filter by unused factories" << endl;
             cout << "1. Less than..." << endl;
             cout << "2. More than..." << endl;
             while(1) {
@@ -162,7 +162,7 @@ void filterK(const unordered_map<int, KC>& KCs) {
 void menu() {
     cout << "1. Add pipeline" << endl;
     cout << "2. Add KC" << endl;
-    cout << "3. Check all elements" << endl;
+    cout << "3. Check elements" << endl;
     cout << "4. Change the pipeline" << endl;
     cout << "5. Change the ceh" << endl;
     cout << "6. Save" << endl;
@@ -185,6 +185,35 @@ bool check_id(const int& r, const unordered_map<int, T>& mas) {
         }
     }
     return false;
+}
+
+void useFilterP(const unordered_map<int, Pipe>& mas) {
+    cout << "Use filter(Y/n)" << endl;
+    bool fltr = check_bool();
+    if (fltr) {
+        filterP(mas);
+    } else {
+        view(mas);
+    }
+}
+
+void useFilterK(const unordered_map<int, KC>& mas) {
+    cout << "Use filter(Y/n)" << endl;
+    bool fltr = check_bool();
+    if (fltr) {
+        filterK(mas);
+    } else {
+        view(mas);
+    }
+}
+
+template <typename T>
+void viewAll(const unordered_map<int, T>& mas) {
+    if (!mas.empty()) {
+            view(mas);
+        } else {
+            printpar(cout, mas);
+        }
 }
 
 
@@ -224,15 +253,28 @@ int main() {
             break;
         }
         case 3: {
-            if (!pipes.empty()) {
-                view(pipes);
-            } else {
-                cout << "no pipelines\n";
-            }
-            if (!KCs.empty()) {
-                view(KCs);
-            } else {
-                cout << "no KCs\n";
+            cout << "1. Display pipes" << endl;
+            cout << "2. Display KCs" << endl;
+            cout << "3. Display all" << endl;
+            int choice1 = check_int();
+            while(1) {
+                if (choice1 == 3) {
+                    cerr << "User displayed all information" << endl;
+                    viewAll(pipes);
+                    viewAll(KCs);
+                    break;
+                } else if (choice1 == 1) {
+                    cerr << "User displayed pipes information" << endl;
+                    useFilterP(pipes);
+                    break;
+                } else if (choice1 == 2) {
+                    cerr << "User displayed KCs information" << endl;
+                    useFilterK(KCs);
+                    break;
+                } else {
+                    cout << "try again" << endl;
+                    cerr << "User choose incorrect option" << endl;
+                }
             }
             break;
         }
@@ -246,13 +288,7 @@ int main() {
                 while(1) {
                     i = check_int();
                     if (i == 2) {
-                        cout << "Use filter(Y/n)" << endl;
-                        fltr = check_bool();
-                        if (fltr) {
-                            filterP(pipes);
-                        } else {
-                            view(pipes);
-                        }
+                        useFilterP(pipes);
                         Ids = choose_id(pipes);
                         if (!Ids.empty()) {
                             for (int j : Ids) {
@@ -263,13 +299,7 @@ int main() {
                         }
                         break;
                     } else if (i == 1) {
-                        cout << "Use filter(Y/n)" << endl;
-                        fltr = check_bool();
-                        if (fltr) {
-                            filterP(pipes);
-                        } else {
-                            view(pipes);
-                        }
+                        useFilterP(pipes);
                         Ids = choose_id(pipes);
                         if (!Ids.empty()) {
                             for (int j : Ids) {
@@ -287,7 +317,7 @@ int main() {
                     }
                 }      
             } else {
-                cout << "No pipelines" << endl;
+                printpar(cout, pipes);
             }
             break;
         }
@@ -301,13 +331,7 @@ int main() {
                 while(1) {
                     i = check_int();
                     if (i == 2) {
-                        cout << "Use filter(Y/n)" << endl;
-                        fltr = check_bool();
-                        if (fltr) {
-                            filterK(KCs);
-                        } else {
-                            view(KCs);
-                        }
+                        useFilterK(KCs);
                         Ids = choose_id(KCs);
                         if (!Ids.empty()) {
                             for (int j : Ids) {
@@ -318,13 +342,7 @@ int main() {
                         }
                         break;
                     } else if (i == 1) {
-                        cout << "Use filter(Y/n)" << endl;
-                        fltr = check_bool();
-                        if (fltr) {
-                            filterK(KCs);
-                        } else {
-                            view(KCs);
-                        }
+                        useFilterK(KCs);
                         Ids = choose_id(KCs);
                         if (!Ids.empty()) {
                             for (int j : Ids) {
@@ -339,7 +357,7 @@ int main() {
                     }
                 }      
             } else {
-                cout << "No pipelines" << endl;
+                printpar(cout, KCs);
             }
             break;
         }
@@ -373,6 +391,8 @@ int main() {
             break;
         }
         case 7: {
+            pipes.clear();
+            KCs.clear();
             cout << "Enter file name download from" << endl;
             string fname;
             fname = read_string();
@@ -409,14 +429,14 @@ int main() {
                     cout << p.second;
                 }
             } else {
-                cout << "no pipelines\n";
+                printpar(cout, pipes);
             }
             if (!KCs.empty()) {
                 for (const auto& k: KCs) {
                     cout << k.second;
                 }
             } else {
-                cout << "no KCs\n";
+                printpar(cout, KCs);
             }
             cerr << "User downloaded information" << endl;
             break;

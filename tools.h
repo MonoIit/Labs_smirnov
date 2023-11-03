@@ -4,6 +4,8 @@
 
 using namespace std;
 
+#define printpar(out, mas) out << "no " << #mas << endl;
+
 /*template <typename T>
 T check() {
     T value;
