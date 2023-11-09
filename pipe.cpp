@@ -12,27 +12,20 @@ Pipe::Pipe()
     NextId += 2;
 }
 
-Pipe::~Pipe(){
-}
-
 void Pipe::add_pipe() {
     cout << "Enter pipeline name" << endl;
     Name = read_string();
-    cerr << "User entered the name: " << Name << endl;
     cout << "Enter pipeline lenght" << endl;
-    Lenght = check(Lenght);
-    cerr << "User entered the Lenght: " << Lenght << endl;
+    Lenght = input_value<int>();
     cout << "Enter pipeline diameter" << endl;
-    Diameter = check(Diameter);
-    cerr << "User entered the Diameter: " << Diameter << endl;
+    Diameter = input_value<int>();
+    cout << Diameter << endl;
     cout << "Is pipeline working? (1/0)" << endl;
-    Status = check(Status);
-    cerr << "User chose " << ((Status == 1) ? "working" : "repairing") << "pipe" << endl;
+    Status = input_value<bool>();
 }
 
 void Pipe::change_pipe() {
     Status = (Status == 1) ? 0 : 1;
-    cerr << "User changed pipe with id " << getId() << ". Status: " << ((Status == 1) ? "working" : "repairing") << endl;
 }
 
 ostream& operator << (ostream& out, const Pipe& p) {
@@ -51,7 +44,26 @@ ostream& operator << (ostream& out, const Pipe& p) {
         out << "unknown" << endl;
     }
     out << "-----------------------" << endl;
-    cerr << "User displayed the information of pipe with id" << p.getId() << endl;
     return out;
 }
 
+void Pipe::save_pipe(ofstream& out) {
+    out << getId() << endl;
+    out << Name << endl;
+    out << Lenght << endl;
+    out << Diameter << endl;
+    out << Status << endl;
+}
+
+void Pipe::download_pipe(ifstream& in) {
+    {
+        int ID;
+        in >> ID;
+        this->id = ID;
+        NextId = (ID >= NextId) ? (ID) : (NextId);
+        in >> ws;
+        getline(in, Name);
+        in >> ws;
+        in >> Lenght >> Diameter >> Status;
+    }
+}

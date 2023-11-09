@@ -15,25 +15,11 @@ public:
     int Diameter;
     bool Status;
     Pipe();
-    ~Pipe();
     void add_pipe();
     void change_pipe();
+    void save_pipe(ofstream& out);
+    void download_pipe(ifstream& in);
     friend ostream& operator << (ostream& out, const Pipe& p);
 };
 
 
-
-inline void save_pipe(ofstream& out, const Pipe& p) {
-    out << p.Name << endl;
-    out << p.Lenght << endl;
-    out << p.Diameter << endl;
-    out << p.Status << endl;
-}
-
-inline void download_pipe(ifstream& in, Pipe& p) {
-    {
-        getline(in, p.Name);
-        in >> ws;
-        in >> p.Lenght >> p.Diameter >> p.Status;
-    }
-}

@@ -1,72 +1,33 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <limits>
 
-using namespace std;
 
-#define printpar(out, mas) out << "no " << #mas << endl;
+
+#define printpar(out, mas) out << "no " << #mas << std::endl;
 
 template <typename T>
-inline T check(T a) {
-    T value = a;
-    cin >> value;
-    while (cin.fail() || cin.peek() != '\n' || value < 0) {
-        cin.clear();
-        cin.ignore(1000, '\n');
-        cout << "try again" << endl;
-        cin >> value;
+T input_value(T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::max()) {
+    T value;
+    std::cin >> value;
+    while (std::cin.fail() || std::cin.peek() != '\n' || value < min || value>max) {
+        std::cin.clear();
+        std::cin.ignore(1000, '\n');
+        std::cout << "try again" << std::endl;
+        std::cin >> value;
     }
+    std::cerr << value << std::endl;
     return value;
 }
 
-inline string read_string() {
-    string name;
-    cin >> ws;
-    getline(cin, name);
+inline std::string read_string() {
+    std::string name;
+    std::cin >> std::ws;
+    std::getline(std::cin, name);
+    std::cerr << name << std::endl;
     return name;
 }   
-
-/*inline int check_int() {
-    int value;
-    cin >> value;
-    while (cin.fail() || std::cin.peek() != '\n' || value < 0) {
-        cin.clear();
-        cin.ignore(1000, '\n');
-        cout << "try again" << endl;
-        cin >> value;
-    }
-    return value;
-}
-
-inline double check_double() {
-    double value;
-    cin >> value;
-    while (cin.fail() || std::cin.peek() != '\n' || value < 0) {
-        cin.clear();
-        cin.ignore(1000, '\n');
-        cout << "try again" << endl;
-        cin >> value;
-    }
-    return value;
-}
-
-inline bool check_bool() {
-    char value;
-    cin >> value;
-    while (1) 
-    {
-        if (value == 'n') {
-            return 0;
-        } else if (value == 'Y') {
-            return 1;
-        } else {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Enter Y/n" << endl;
-            cin >> value;
-        }
-    }
-}*/
 
 class redirect_output_wrapper
 {

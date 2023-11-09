@@ -2,8 +2,8 @@
 #include <fstream>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include <algorithm>
 #include <format>
 #include <chrono>
 #include "pipe.h"
@@ -15,150 +15,31 @@ using namespace chrono;
 
 template <typename T>
 vector<int> choose_id(const unordered_map<int, T>& mas) {
-    vector<int> Ids;
-    cout << "Choose pipe`s id (choose 0 if you are done)" << endl;
-    cerr << "User choosing IDs" << endl;
+    #define printwar(out, mas) out << "No " << #mas << " with this ID" << endl;
+    unordered_set<int> Ids;
+    cout << "Choose id (choose 0 if you are done)" << endl;
     while(1) {
         int ID;
-        ID = check(ID);
-        if (ID == 0) {
-            cerr << "User stoped choosing IDs" << endl;
+        ID = input_value<int>(0, 9999);
+        if (ID == 0) 
             break;
-        } else if (find(Ids.begin(), Ids.end(), ID) != Ids.end()) {
-            cout << "This ID has already choosen" << endl;
-            cerr << "User chose ID that is already chosen";
-        } else if (check_id(ID, mas)) {
-            Ids.push_back(ID);
-            cerr << "User chose ID: " << ID << endl;
+        if (check_id(ID, mas)) {
+            Ids.insert(ID);
         } else {
-            cout << "No pipe with this ID" << endl;
-            cerr << "User choose incorrect ID" << endl;
+            printwar(cout, mas);
         }
         if (Ids.size() == mas.size()) {
-            cerr << "All IDs are choosed" << endl;
+            cout << "All IDs are choosed" << endl;
             break;
         }
     }
-    cerr << "IDs have been choosen" << endl;
-    return Ids;
-}
-
-template <typename T>
-void filter_name(const unordered_map<int, T>& mas) {
-    string find;
-    cout << "Enter name" << endl;
-    find = read_string();
-    cerr << "User chose name for using filter" << endl;
-    for (const auto& m : mas) {
-        if (m.second.Name.find(find) != string::npos) {
-            cout << m.second;
-        }
-    }
-    cerr << "Objects has been displayed" << endl;
-}
-
-void filterP(const unordered_map<int, Pipe>& pipes) {
-    cerr << "User used filter for pipes" << endl;
-    cout << "1. find by name" << endl;
-    cout << "2. find by status" << endl;
-    while(1) {
-        int i;
-        i = check(i);
-        if (i == 1) {
-            cerr << "User used filter by names" << endl;
-            filter_name(pipes);
-        } else if (i == 2) {
-            cerr << "User used filter by status" << endl;
-            cout << "1. find working pipes" << endl;
-            cout << "2. find repairing pipes" << endl;
-            while(1) {
-                int j;
-                j = check(j);
-                if (j == 1) {
-                    cerr << "User found working pipes" << endl;
-                    for (const auto& p : pipes) {
-                        if (p.second.Status == 1) {
-                            cout << p.second;
-                            cerr << "Pipe with ID: " << p.second.getId() << "has been displayed" << endl;
-                        }
-                    }
-                } else if (j == 2) {
-                    cerr << "User found repairing pipes" << endl;
-                    for (const auto& p : pipes) {
-                        if (p.second.Status == 0) {
-                            cout << p.second;
-                            cerr << "Pipe with ID: " << p.second.getId() << "has been displayed" << endl;
-                        }
-                    }
-                } else {
-                    cout << "try again" << endl;
-                    cerr << "User chose incorrect option" << endl;
-                }
-                cerr << "Pipes have been displayed" << endl;
-                break;
-            }
-            break;
-        } else {
-            cout << "try again" << endl;
-            cerr << "User chose incorrect option" << endl;
-        }
-        cerr << "User stoped using filter" << endl;
-        break;
-    }
+    return vector<int>(Ids.begin(), Ids.end());
 }
 
 
-///log
-void filterK(const unordered_map<int, KC>& KCs) {
-    cerr << "User used filter for KCs" << endl;
-    cout << "1. find by name" << endl;
-    cout << "2. find by unused factories" << endl;
-    while(1) {
-        int i;
-        i = check(i);
-        if (i == 1) {
-            cerr << "User used filter by names" << endl;
-            filter_name(KCs);
-        } else if (i == 2) {
-            cerr << "User chose filter by unused factories" << endl;
-            cout << "1. Less than..." << endl;
-            cout << "2. More than..." << endl;
-            while(1) {
-                int j;
-                j = check(j);
-                if (j == 1) {
-                    double h;
-                    h = check(h);
-                    for (const auto& k : KCs) {
-                        if (k.second.Working_amount/k.second.Amount <= h) {
-                            cout << k.second;
-                            cerr << "KC with ID: " << k.second.getId() << "has been displayed" << endl;
-                        }
-                    }
-                } else if (j == 2) {
-                    double h;
-                    h = check(h);
-                    for (const auto& k : KCs) {
-                        if (k.second.Working_amount/k.second.Amount >= h) {
-                            cout << k.second;
-                            cerr << "KC with ID: " << k.second.getId() << "has been displayed" << endl;
-                        }
-                    }
-                } else {
-                    cout << "try again" << endl;
-                    cerr << "User chose incorrect option" << endl;
-                }
-                break;
-            }
-            break;
-        } else {
-            cout << "try again" << endl;
-            cerr << "User chose incorrect option" << endl;
-        }
-        cerr << "User stoped using filter" << endl;
-        break;
-    }
-}
+
+
+
 
 
 void menu() {
@@ -181,35 +62,11 @@ void view(const unordered_map<int, T>& mas) {
 
 template <typename T>
 bool check_id(const int& r, const unordered_map<int, T>& mas) {
-    for (const auto& m: mas) {
-        if (m.first == r) {
-            return true;
-        }
-    }
-    return false;
+    return mas.count(r)>0;
 }
 
-void useFilterP(const unordered_map<int, Pipe>& mas) {
-    cout << "Use filter(1/0)" << endl;
-    bool fltr;
-    fltr = check(fltr);
-    if (fltr) {
-        filterP(mas);
-    } else {
-        view(mas);
-    }
-}
 
-void useFilterK(const unordered_map<int, KC>& mas) {
-    cout << "Use filter(1/0)" << endl;
-    bool fltr;
-    fltr = check(fltr);
-    if (fltr) {
-        filterK(mas);
-    } else {
-        view(mas);
-    }
-}
+
 
 template <typename T>
 void viewAll(const unordered_map<int, T>& mas) {
@@ -220,6 +77,87 @@ void viewAll(const unordered_map<int, T>& mas) {
         }
 }
 
+template <typename T, typename U>
+using Filter = bool(*)(const T& t, U param);
+
+template <typename T>
+bool filter_name(const T& t, string name) {
+    return name == t.Name.substr(0, name.size());
+}
+
+bool filter_status(const Pipe& p, bool status){
+    return (p.Status == status) ? (1) : (0);
+}
+
+bool filter_amount_more(const KC& k, double amount_of) {
+    return ((double)k.Working_amount/(double)k.Amount >= (amount_of/100.0)) ? (1) : (0);
+}
+
+bool filter_amount_less(const KC& k, double amount_of) {
+    return ((double)k.Working_amount/(double)k.Amount <= (amount_of/100.0)) ? (1) : (0);
+}
+
+template <typename T, typename U>
+vector<int> usefilter(const unordered_map<int, T>& mas, Filter<T, U> f, U param) {
+    vector <int> res;
+	for (auto& s : mas) {
+		if (f(s.second, param))
+			res.push_back(s.first);
+	}
+	return res;
+}
+
+void useFilterP(unordered_map<int, Pipe>& mas) {
+    cout << "1. Use filter by name" << endl;
+    cout << "2. Use filter by status" << endl;
+    int fltr;
+    fltr = input_value<int>(1, 2);
+    if (fltr == 1) {
+        string name;
+        cout << "Enter the name" << endl;
+        name = read_string();
+        for (int i : usefilter(mas, filter_name, name)) {
+            cout << mas[i];
+        }
+    } else if (fltr == 2) {
+        bool value;
+        cout << "Enter status(1/0)" << endl;
+        cin >> value;
+        for (int i : usefilter(mas, filter_status, value)) {
+            cout << mas[i];
+        }
+    }
+}
+
+void useFilterK(unordered_map<int, KC>& mas) {
+    cout << "1. Use filter by name" << endl;
+    cout << "2. Use filter by amount(more)" << endl;
+    cout << "3. Use filter by amount(less)" << endl;
+    int fltr;
+    fltr = input_value<int>(1, 3);
+    if (fltr == 1) {
+        string name;
+        cout << "Enter the name" << endl;
+        name = read_string();
+        for (int i : usefilter(mas, filter_name, name)) {
+            cout << mas[i];
+        }
+    } else if (fltr == 2) {
+        double value;
+        cout << "Enter coef" << endl;
+        value = input_value<double>(0, 100);
+        for (int i : usefilter(mas, filter_amount_more, value)) {
+            cout << mas[i];
+        }
+    } else if (fltr == 3) {
+        double value;
+        cout << "Enter coef" << endl;
+        value = input_value<double>(0, 100);
+        for (int i : usefilter(mas, filter_amount_less, value)) {
+            cout << mas[i];
+        }
+    }
+}
 
 int main() {
 	redirect_output_wrapper cerr_out(cerr);
@@ -228,15 +166,13 @@ int main() {
 	ofstream logfile("log_"+ time);
 	if (logfile)
 		cerr_out.redirect(logfile);
-    cerr << "Programm start" << endl;
     unordered_map<int, Pipe> pipes;
     unordered_map<int, KC> KCs;
     bool flag1 = true;
     while (flag1) {
         menu();
         int n;
-        n = check(n);
-        cerr << "User chose option " << n << endl; 
+        n = input_value<int>(0, 8);
         switch (n)
         {
         case 1: {
@@ -244,7 +180,6 @@ int main() {
                 Pipe pipe;
                 pipe.add_pipe();
                 pipes.insert({pipe.getId(), pipe});
-                cerr << "User added a pipe" << endl;
             }
             break;
         }
@@ -253,7 +188,6 @@ int main() {
                 KC kc;
                 kc.add_KC();
                 KCs.insert({kc.getId(), kc});
-                cerr << "User added a KC" << endl;
             }
             break;
         }
@@ -262,24 +196,20 @@ int main() {
             cout << "2. Display KCs" << endl;
             cout << "3. Display all" << endl;
             int choice1;
-            choice1 = check(choice1);
+            choice1 = input_value<int>(1, 3);
             while(1) {
                 if (choice1 == 3) {
-                    cerr << "User displayed all information" << endl;
                     viewAll(pipes);
                     viewAll(KCs);
                     break;
                 } else if (choice1 == 1) {
-                    cerr << "User displayed pipes information" << endl;
                     useFilterP(pipes);
                     break;
                 } else if (choice1 == 2) {
-                    cerr << "User displayed KCs information" << endl;
                     useFilterK(KCs);
                     break;
                 } else {
                     cout << "try again" << endl;
-                    cerr << "User choose incorrect option" << endl;
                 }
             }
             break;
@@ -291,7 +221,7 @@ int main() {
                 int i;
                 vector<int> Ids;
                 while(1) {
-                    i = check(i);
+                    i = input_value<int>(1, 2);
                     if (i == 2) {
                         useFilterP(pipes);
                         Ids = choose_id(pipes);
@@ -309,16 +239,13 @@ int main() {
                         if (!Ids.empty()) {
                             for (int j : Ids) {
                                 pipes.erase(j);
-                                cerr << "User deleted a pipe with id " << j << endl; 
                             }
                         } else {
                             cout << "You did not choose id" << endl;
-                            cerr << "User did not choose id" << endl;
                         }
                         break;
                     } else {
                         cout << "try again" << endl;
-                        cerr << "User choose incorrect option" << endl;
                     }
                 }      
             } else {
@@ -331,10 +258,9 @@ int main() {
                 cout << "1. Delete" << endl;
                 cout << "2. Change amount of working" << endl;
                 int i;
-                bool fltr;
                 vector<int> Ids;
                 while(1) {
-                    i = check(i);
+                    i = input_value<int>(1, 2);;
                     if (i == 2) {
                         useFilterK(KCs);
                         Ids = choose_id(KCs);
@@ -370,7 +296,6 @@ int main() {
             cout << "Enter file name to save" << endl;
             string fname;
             fname = read_string();
-            cerr << "User enter file name for saving" << endl;
             ofstream out;
             out.open(fname);
             out.close();
@@ -379,7 +304,8 @@ int main() {
                 out << "pipes" << endl;
                 out << pipes.size() << endl;
                 for (const auto& p: pipes) {
-                    save_pipe(out, p.second);
+                    Pipe P = p.second;
+                    P.save_pipe(out);
                 }
                 out.close();
             }
@@ -388,11 +314,11 @@ int main() {
                 out << "KCs" << endl;
                 out << KCs.size() << endl;
                 for (const auto& k: KCs) {
-                    save_KC(out, k.second);
+                    KC K = k.second;
+                    K.save_KC(out);
                 }
                 out.close();
             }
-            cerr << "User saved information in file " << fname << endl;
             break;
         }
         case 7: {
@@ -401,7 +327,6 @@ int main() {
             cout << "Enter file name download from" << endl;
             string fname;
             fname = read_string();
-            cerr << "User enter file name for download from" << endl;
             ifstream in(fname);
             string flag1;
             in >> flag1;
@@ -411,7 +336,7 @@ int main() {
                 for (int j = 0; j < i; j++) {
                     in >> ws;
                     Pipe p;
-                    download_pipe(in, p);
+                    p.download_pipe(in);
                     pipes.insert({p.getId(), p});
                 }
                 in >> ws;
@@ -419,12 +344,12 @@ int main() {
             }
             in >> ws;
             if (!flag1.empty()) {
-                int k;
-                in >> k;
-                for (int l = 0; l < k; l++) {
+                int y;
+                in >> y;
+                for (int l = 0; l < y; l++) {
                     in >> ws;
                     KC k;
-                    download_KC(in, k);
+                    k.download_KC(in);
                     KCs.insert({k.getId(), k});
                 }
             }
@@ -443,22 +368,18 @@ int main() {
             } else {
                 printpar(cout, KCs);
             }
-            cerr << "User downloaded information" << endl;
             break;
         }
         case 0: {
             flag1 = false;
-            cerr << "User finished work" << endl;
             break;  
         }  
         default: {
             cout << "please, enter suggested numbers" << endl;
-            cerr << "User chose incorect option" << endl;
             break;
         }
         }
     }
-    cerr << "Programm finished" << endl;
     return 0;
 }
 
