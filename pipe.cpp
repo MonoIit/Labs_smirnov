@@ -12,7 +12,7 @@ Pipe::Pipe()
     NextId += 2;
 }
 
-void Pipe::add_pipe() {
+void Pipe::create() {
     cout << "Enter pipeline name" << endl;
     Name = read_string();
     cout << "Enter pipeline lenght" << endl;
@@ -24,7 +24,7 @@ void Pipe::add_pipe() {
     Status = input_value<bool>();
 }
 
-void Pipe::change_pipe() {
+void Pipe::change() {
     Status = (Status == 1) ? 0 : 1;
 }
 
@@ -47,7 +47,7 @@ ostream& operator << (ostream& out, const Pipe& p) {
     return out;
 }
 
-void Pipe::save_pipe(ofstream& out) {
+void Pipe::save(ofstream& out) {
     out << getId() << endl;
     out << Name << endl;
     out << Lenght << endl;
@@ -55,7 +55,7 @@ void Pipe::save_pipe(ofstream& out) {
     out << Status << endl;
 }
 
-void Pipe::download_pipe(ifstream& in) {
+void Pipe::download(ifstream& in) {
     {
         int ID;
         in >> ID;

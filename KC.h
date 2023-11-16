@@ -15,10 +15,10 @@ public:
     int Working_amount;
     double Efficiency;
     KC();
-    void add_KC();
-    void change_KC();
-    void save_KC(ofstream& out);
-    void download_KC(ifstream& in);
+    void create();
+    void change();
+    void save(ofstream& out);
+    void download(ifstream& in);
     friend ostream& operator << (ostream& out, const KC& m);
 };
 

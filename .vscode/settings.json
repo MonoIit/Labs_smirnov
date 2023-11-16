@@ -63,6 +63,7 @@
         "iomanip": "cpp",
         "list": "cpp",
         "optional": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "unordered_set": "cpp"
     }
 }

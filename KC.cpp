@@ -12,7 +12,7 @@ KC::KC() {
     NextId += 2;
 }
 
-void KC::add_KC() {
+void KC::create() {
     cout << "Enter manufactory name" << endl;
     Name = read_string();
     cout << "Enter amount of manufactories" << endl;
@@ -23,13 +23,13 @@ void KC::add_KC() {
     Efficiency = input_value<double>();
 }
 
-void KC::change_KC()
+void KC::change()
  {
     cout << "Enter amount of working manufactories" << endl;
     Working_amount = input_value<int>(0, Amount);
  }
 
-void KC::save_KC(ofstream& out) {
+void KC::save(ofstream& out) {
     out << getId() << endl;
     out << Name << endl;
     out << Amount << endl;
@@ -37,7 +37,7 @@ void KC::save_KC(ofstream& out) {
     out << Efficiency << endl;
 }
 
-void KC::download_KC(ifstream& in) {
+void KC::download(ifstream& in) {
     int ID;
     in >> ID;
     this->id = ID;
