@@ -14,6 +14,7 @@ public:
     int Amount;
     int Working_amount;
     double Efficiency;
+    int connections;
     KC();
     void create();
     void change();
