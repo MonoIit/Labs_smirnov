@@ -5,13 +5,14 @@
 
 using namespace std;
 
-int KC::NextId = 2;
+int KC::NextId = 1;
 
 KC::KC() {
-    connections = 0;
+    connection = 0;
     this->id=NextId;
-    NextId += 2;
+    NextId += 1;
 }
+
 
 void KC::create() {
     cout << "Enter manufactory name" << endl;
@@ -36,7 +37,7 @@ void KC::save(ofstream& out) {
     out << Amount << endl;
     out << Working_amount << endl;
     out << Efficiency << endl;
-    out << connections << endl;
+    out << connection << endl;
 }
 
 void KC::download(ifstream& in) {
@@ -47,7 +48,7 @@ void KC::download(ifstream& in) {
     in >> ws;
     getline(in, Name);
     in >> ws;
-    in >> Amount >> Working_amount >> Efficiency >> connections;
+    in >> Amount >> Working_amount >> Efficiency >> connection;
 }
 
 ostream& operator << (ostream& out, const KC& k) {
@@ -58,7 +59,23 @@ ostream& operator << (ostream& out, const KC& k) {
     out << "Amount of manufactories: " << k.Amount << endl;
     out << "Amount of working manufactories: " << k.Working_amount << endl;
     out << "The value of 'efficiency': " << k.Efficiency << endl;
-    out << "Connected pipes: " << k.connections << endl;
+    out << "Connected pipes: " << k.connection << endl;
     out << "-----------------------" << endl;
     return out;
+}
+
+void KC::createlink()
+{
+    if (!connection)
+        connection++;
+}
+
+void KC::removelink()
+{
+    connection--;
+}
+
+bool KC::linked()
+{
+    return connection;
 }

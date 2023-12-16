@@ -1,7 +1,7 @@
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "tools.h"
 
 using namespace std;
 
@@ -14,16 +14,19 @@ public:
     int Lenght;
     int Diameter;
     bool Status;
-    bool connect_status;
     int connect_from;
     int connect_to;
     Pipe();
     void create();
+    void create(int& diameter);
     void change();
     void save(ofstream& out);
     void download(ifstream& in);
+    void createLink(int &from, int &to);
+    void removeLink();
+    bool linked();
+    void showLink();
     friend ostream& operator << (ostream& out, const Pipe& p);
-    void connect(int in, int out);
 };
 
 

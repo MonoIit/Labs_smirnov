@@ -1,7 +1,7 @@
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "tools.h"
 
 using namespace std;
 
@@ -14,8 +14,11 @@ public:
     int Amount;
     int Working_amount;
     double Efficiency;
-    int connections;
+    int connection;
     KC();
+    void createlink();
+    void removelink();
+    bool linked();
     void create();
     void change();
     void save(ofstream& out);

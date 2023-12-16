@@ -8,7 +8,6 @@ int Pipe::NextId = 1;
 
 Pipe::Pipe()
 {
-    connect_status = false;
     connect_to = -1;
     connect_from = -1;
     this->id=NextId;
@@ -22,6 +21,17 @@ void Pipe::create() {
     Lenght = input_value<int>(1);
     cout << "Enter pipeline diameter" << endl;
     Diameter = input_diameter();
+    cout << "Is pipeline working? (1/0)" << endl;
+    Status = input_value<bool>();
+}
+
+void Pipe::create(int& diameter)
+{
+    cout << "Enter pipeline name" << endl;
+    Name = read_string();
+    cout << "Enter pipeline lenght" << endl;
+    Lenght = input_value<int>(1);
+    Diameter = diameter;
     cout << "Is pipeline working? (1/0)" << endl;
     Status = input_value<bool>();
 }
@@ -45,15 +55,6 @@ ostream& operator << (ostream& out, const Pipe& p) {
     } else {
         out << "unknown" << endl;
     }
-    if (p.connect_status)
-    {
-        out << "Connected from" << p.connect_from << endl;
-        out << "Connected to" << p.connect_to << endl;
-    }
-    else 
-    {
-        out << "No connection" << endl;
-    }
     out << "-----------------------" << endl;
     return out;
 }
@@ -64,7 +65,6 @@ void Pipe::save(ofstream& out) {
     out << Lenght << endl;
     out << Diameter << endl;
     out << Status << endl;
-    out << connect_status << endl;
     out << connect_from << endl;
     out << connect_to << endl;
 }
@@ -78,13 +78,41 @@ void Pipe::download(ifstream& in) {
         in >> ws;
         getline(in, Name);
         in >> ws;
-        in >> Lenght >> Diameter >> Status >> connect_status >> connect_from >> connect_to;
+        in >> Lenght >> Diameter >> Status >> connect_from >> connect_to;
     }
 }
 
-void Pipe::connect(int to, int from)
+void Pipe::createLink(int &from, int &to)
 {
-    connect_status = true;
-    connect_to = to;
-    connect_from = from;
+    if (connect_from == -1 && connect_to == -1 && from != to)
+    {
+        connect_from = from;
+        connect_to = to;
+    }
+    else
+        cout << "Error" << endl;
 }
+
+void Pipe::removeLink()
+{
+    connect_from = -1;
+    connect_to = - 1;
+}
+
+bool Pipe::linked()
+{
+    if (connect_from != -1 && connect_to != -1)
+        return true;
+    return false;
+}
+
+void Pipe::showLink()
+{
+    cout << "Pipe`s id: " << id << endl;
+    cout << "Connected from: " << connect_from << endl;
+    cout << "Connected to: " << connect_to << endl;
+}
+
+
+
+
